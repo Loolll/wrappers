@@ -1,0 +1,95 @@
+a)models:
+1)open any models.py file in apps
+2)write inside to create custom model:
+	from django.db import models
+
+
+	class MyNewModel(models.Model):
+	#	somefields:
+		some_char_field = models.CharField(**options)#options: max_length, min_length, blank, default, verbose_name etc
+		some_int_field = models.IntegerField(**options)#options: max_value, min_value, blank, default, verbose_name etc
+		some_float_field = models.FloatField(**options)#options: max_value, min_value, blank, default, verbose_name etc
+		some_date_field = models.DateTimeField(**options)#options: blank, default
+		some_choice_field = models.fieldtype(choices=((value, verbose_name),(value, verbose_name)), **options)
+		some_file_field = #TODO
+	
+	#	foreing key field examples:
+		user = models.ForeignKey(NAME_OF_MODEL,**options)#required options: on_delete, unique
+	#	also it can be OneToMany or OneToOne fields:
+		some_onetomany_field = #TODO
+		some_onetoone_field = #TODO 
+			
+3)creating custom User model: 
+	from django.contrib.auth.models import AbstractUser
+	
+	
+	class User(AbstractUser):
+		#username	}
+		#password		} basic fields
+		#email		}
+		
+		customfield1 = ...
+		customfield2 = ...
+		customfield3 = ...		
+		...
+
+b)forms:
+1)open or create any forms.py file in app, inside:
+	from django import forms
+
+	
+	class MyNewForm(forms.Form):
+		#field's like models fields:
+		somefield = forms.FIELDTYPE(**options)#options beside standart models fields: label, required etc
+2)usage:
+2.1)import and transform your form in template:
+	#in views.py
+	from app__name.forms import FORMNAME
+	
+	
+	def some_http_responser(request):
+		...
+		return (request, template, {'form': FORMNAME})
+
+2.2)display form in template:
+	#in template:
+		<form action='...' method='post' <!-- IF FILETRANSFER DO NOT FORGET ADD: --> enctype='multipart/form-data'>
+		{% csrf_token %}
+		<!-- form view -->
+		{{form.as_p}} or {{form.fieldname}} {{form.fieldname.label}}
+		</form>
+
+2.3)data extraction:
+	#in some views.py
+	from app__name import FORMNAME
+
+	
+	def some_http_responser(request):
+		...
+		form = FORMNAME(request.POST)
+		if form.is_valid():
+			#getting inputs:
+			input_example = form.cleaned_data['formfieldname']
+			#if file exists:
+			input_file = request.FILES['formfilefield']
+
+c)email smtp
+1)config
+#in settings:
+EMAIL_HOST = 'smtpprovider'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'email'
+EMAIL_HOST_PASSWORD = 'pass'
+EMAIL_USE_SSL = True
+2)usage
+from django.core.mail import send_mail
+
+
+send_mail(
+        Title,
+        Text,
+        emailsmtp,
+        [usermail1, usermail2, usermail3...],
+	fail_silently=False,
+)
+

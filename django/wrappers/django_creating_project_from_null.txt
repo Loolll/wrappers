@@ -1,0 +1,80 @@
+a)creating project:
+
+1)create venv and activate it:
+1.1)in pycharm it's auto-proceed
+1.1)in bash: python3 -m venv env; source env/bin/activate
+2)create django project: django-admin createproject projectname
+3)set django project settings in: root/projectname/projectname/settings.py
+3.1)edit time settings and language in:
+	LANGUAGE_CODE = 'en-us'
+	TIME_ZONE = 'UTC'
+
+
+b)creating app:
+
+1)from root/projectname: django-admin createapp app
+2)add in root/projectname/projectname/settings.py INSTALLED_APPS = [
+	...,
+	'app',
+	]
+
+c)if need to change db:
+#TODO
+
+
+
+------------------------------------------
+deploy, linux settings, project settings:
+1)buy server
+2)install linux (for ex. ubuntu 16.04), ssh connection, delete non ssh auth
+3)setup all necessary package
+4)create user for webapps
+5)configure django settings to deploy
+6)create venv and install all packages
+7)configure nginx
+8)configure uwsgi with nginx
+9)create sh script and add it in boot
+
+2)after install linux
+ssh-copy-id root@server
+#TODO delete password auth
+3)
+#install packages
+apt-get update
+apt-get install
+apt-get upgrade
+apt-get install pip, pip3, python-dev, python3-dev, essential-build #necessary packages for python
+apt-get install nginx
+apt-get install vim, tmux #if need
+pip3 install uwsgi
+...
+4)
+#create user #TODO
+useradd web --disable-password
+mkdir /home/web/.ssh
+#TODO ssh copy from root to web
+5)in django project:
+#collect static to use it later from nginx
+#in settings:
+DEBUG = False
+ALLOWED_HOSTS = [server]
+6)create venv and install all that you need
+python3 -m venv venv
+source venv/bin/activate
+pip3 install somepackages
+7)nginx:
+#createfile with nginx config:
+...
+#make link on file from nginx boot configs
+ln -s /fullpathtoconfig/nginx_config /etc/nginx/sites-enabled/
+8)uwsgi:
+#createfile with uwsgi config:
+...
+#make link on file from uwsgivassals
+ln -s /fullpathtoconfig/uwsgi_config.ini /etc/uwsgi/vassals
+9)creating sh script that load on boot
+#file
+#!bin/bash
+...#TODO command that activate uwsgi emperor by web user
+----------------------------------------
+reboot
